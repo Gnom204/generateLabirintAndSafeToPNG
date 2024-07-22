@@ -69,26 +69,36 @@ function drawMap() {
   const canvas = document.querySelector("canvas");
   // создаём переменную, через которую будем работать с холстом
   const context = canvas.getContext("2d");
+  // устанавливаем стиль линии
+  context.lineWidth = 12;
+  context.lineCap = "round";
+  context.lineJoin = "round";
+  context.miterLimit = 10; // увеличиваем жёсткость углов линий
   // обрабатываем по очереди все ячейки в каждом столбце и строке
   for (let x = 0; x < columnsSize; x++) {
     for (let y = 0; y < rowsSize; y++) {
       // если на карте лабиринта эта ячейка помечена как стена
       if (getField(x, y) === "▉") {
         // берём чёрный цвет
-        context.fillStyle = "#f0f0f0";
-        context.lineCap = "round";
-
-        // начинаем рисовать новую фигуру
+        context.strokeStyle = "#f0f0f0";
+        // начинаем рисовать новую линию
         context.beginPath();
-        // делаем прямоугольник на месте этой ячейки
-        context.rect(
-          padding + x * fieldSize,
-          padding + y * fieldSize,
-          fieldSize,
-          fieldSize
-        );
-        // закрашиваем его чёрным
-        context.fill();
+        // делаем линию внутри этой ячейки
+        const xCenter = padding + x * fieldSize + fieldSize / 2;
+        const yCenter = padding + y * fieldSize + fieldSize / 2;
+        context.moveTo(xCenter, yCenter);
+        if (x + 1 < columnsSize && getField(x + 1, y) === "▉") {
+          const nextX = padding + (x + 1) * fieldSize + fieldSize / 2;
+          const nextY = yCenter;
+          context.quadraticCurveTo(xCenter, nextY, nextX, nextY);
+        }
+        if (y + 1 < rowsSize && getField(x, y + 1) === "▉") {
+          const nextX = xCenter;
+          const nextY = padding + (y + 1) * fieldSize + fieldSize / 2;
+          context.quadraticCurveTo(xCenter, yCenter, xCenter, nextY);
+        }
+        // заканчиваем рисовать новую линию
+        context.stroke();
       }
     }
   }
@@ -109,7 +119,6 @@ generateButton.addEventListener("click", () => {
   map = generateMaze(columnsSize, rowsSize);
   init();
   drawMap();
-  drawExit();
 });
 resetCanvasButton.addEventListener("click", () => {
   document.querySelector("canvas").remove();
@@ -123,41 +132,3 @@ saveButton.addEventListener("click", () => {
   link.download = "maze.png";
   link.click();
 });
-
-function drawExit() {
-  const canvas = document.querySelector("canvas");
-  // создаём переменную, через которую будем работать с холстом
-  const context = canvas.getContext("2d");
-  // берём белый цвет
-  context.fillStyle = "white";
-  // начинаем рисовать новую фигуру
-  context.beginPath();
-  // рисуем белый прямоугольник над первой ячейкой лабиринта
-  context.rect(padding, 0, fieldSize, padding);
-  // закрашиваем его белым
-  context.fill();
-
-  context.beginPath();
-
-  if (columnsSize % 2 == 0) {
-    shiftX = fieldSize;
-  }
-  if (rowsSize % 2 == 0) {
-    shiftY = fieldSize;
-  }
-  context.rect(
-    (columnsSize - 1) * fieldSize + padding - shiftX,
-    rowsSize * fieldSize + padding - shiftY,
-    fieldSize,
-    padding + shiftY
-  );
-
-  // рисуем белый прямоугольник под последней ячейкой лабиринта
-  context.rect(
-    (columnsSize - 1) * fieldSize + padding,
-    rowsSize * fieldSize + padding,
-    fieldSize,
-    padding
-  );
-  context.fill();
-}
