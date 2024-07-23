@@ -118,6 +118,7 @@ generateButton.addEventListener("click", () => {
   document.body.insertAdjacentElement("afterbegin", canvas);
   map = generateMaze(columnsSize, rowsSize);
   init();
+  drawCells(canvas, fieldSize);
   drawMap();
 });
 resetCanvasButton.addEventListener("click", () => {
