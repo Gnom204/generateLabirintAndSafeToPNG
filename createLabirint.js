@@ -80,7 +80,7 @@ function drawMap() {
       // если на карте лабиринта эта ячейка помечена как стена
       if (getField(x, y) === "▉") {
         // берём чёрный цвет
-        context.strokeStyle = "black";
+        context.strokeStyle = "#f0f0f0";
         // начинаем рисовать новую линию
         context.beginPath();
         // делаем линию внутри этой ячейки
