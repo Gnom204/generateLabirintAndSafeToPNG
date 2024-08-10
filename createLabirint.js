@@ -80,7 +80,7 @@ function drawMap() {
       // если на карте лабиринта эта ячейка помечена как стена
       if (getField(x, y) === "▉") {
         // берём чёрный цвет
-        context.strokeStyle = "#f0f0f0";
+        context.strokeStyle = "black";
         // начинаем рисовать новую линию
         context.beginPath();
         // делаем линию внутри этой ячейки
@@ -104,8 +104,6 @@ function drawMap() {
   }
 }
 
-// рисуем рамку и готовимся к отрисовке лабиринта
-
 columnInput.addEventListener("input", () => {
   columnsSize = columnInput.value;
 });
@@ -118,7 +116,7 @@ generateButton.addEventListener("click", () => {
   document.body.insertAdjacentElement("afterbegin", canvas);
   map = generateMaze(columnsSize, rowsSize);
   init();
-  drawCells(canvas, fieldSize);
+  // drawCells(canvas, fieldSize);
   drawMap();
 });
 resetCanvasButton.addEventListener("click", () => {
